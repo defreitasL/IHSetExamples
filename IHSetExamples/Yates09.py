@@ -1,4 +1,4 @@
-from IHSetJaramillo20 import cal_Jaramillo20, jaramillo20
+from IHSetYates09 import cal_Yates09, yates09
 from IHSetCalibration import setup_spotpy
 import xarray as xr
 import os
@@ -9,8 +9,6 @@ import spotpy as spt
 
 # config = xr.Dataset(coords={'dt': 3,                # [hours]
 #                             'switch_Yini': 0,       # Calibrate the initial position? (0: No, 1: Yes)
-#                             'switch_vlt': 0,        # Calibrate the longterm trend? (0: No, 1: Yes)
-#                             'vlt': 0,               # Longterm trend [m]
 #                             'Ysi': 2000,            # Initial year for calibration
 #                             'Msi': 1,               # Initial month for calibration
 #                             'Dsi': 1,               # Initial day for calibration
@@ -26,8 +24,6 @@ import spotpy as spt
 
 config = xr.Dataset(coords={'dt': 3,                # [hours]
                             'switch_Yini': 0,       # Calibrate the initial position? (0: No, 1: Yes)
-                            'switch_vlt': 0,        # Calibrate the longterm trend? (0: No, 1: Yes)
-                            'vlt': 0,               # Longterm trend [m]
                             'Ysi': 1999,            # Initial year for calibration
                             'Msi': 1,               # Initial month for calibration
                             'Dsi': 1,               # Initial day for calibration
@@ -39,11 +35,11 @@ config = xr.Dataset(coords={'dt': 3,                # [hours]
                             'repetitions': 40000    # Number of repetitions for the calibration algorithm
                             })
 
-
 wrkDir = os.getcwd()
 config.to_netcdf(wrkDir+'/data/config.nc', engine='netcdf4')
 
-model = cal_Jaramillo20(wrkDir+'/data/')
+# Verifica se o arquivo existe
+model = cal_Yates09(wrkDir+'/data/')
 
 setup = setup_spotpy(model)
 
@@ -59,7 +55,7 @@ b = best_model_run['parb']
 cacr = -best_model_run['parcacr']
 cero = -best_model_run['parcero']
 
-full_run, _ = jaramillo20(model.E, model.dt, a, b, cacr, cero, model.Y_obs[0], model.vlt)
+full_run, _ = yates09(model.E, model.dt, a, b, cacr, cero, model.Y_obs[0])
 
 plt.rcParams.update({'font.family': 'serif'})
 plt.rcParams.update({'font.size': 7})
@@ -71,14 +67,14 @@ fig = plt.figure(figsize=(12, 2), dpi=300, linewidth=5, edgecolor="#04253a")
 ax = plt.subplot(1,1,1)
 # ax.plot(best_simulation,color='black',linestyle='solid', label='Best objf.='+str(bestobjf))
 ax.scatter(model.time_obs, model.Y_obs,s = 1, c = 'grey', label = 'Observed data')
-ax.plot(model.time, full_run, color='red',linestyle='solid', label= 'Jaramillo et al.(2020)')
+ax.plot(model.time, full_run, color='red',linestyle='solid', label= 'Yates et al.(2009)')
 plt.fill([model.start_date, model.end_date, model.end_date, model.start_date], [-1e+5, -1e+5, 1e+5, 1e+5], 'k', alpha=0.1, edgecolor=None, label = 'Calibration Period')
 plt.ylim([40,80])
 plt.xlim([model.time[0], model.time[-1]])
 plt.ylabel('Shoreline position [m]', fontdict=font)
 plt.legend(ncol = 6,prop={'size': 6}, loc = 'upper center', bbox_to_anchor=(0.5, 1.15))
 plt.grid(visible=True, which='both', linestyle = '--', linewidth = 0.5)
-fig.savefig('./results/Best_modelrun_'+str(config.cal_alg.values)+'.png',dpi=300)
+fig.savefig('./results/Yates09_Best_modelrun_'+str(config.cal_alg.values)+'.png',dpi=300)
 
 spt.analyser.plot_parametertrace(results)
 

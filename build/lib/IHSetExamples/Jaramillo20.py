@@ -43,15 +43,6 @@ config = xr.Dataset(coords={'dt': 3,                # [hours]
 wrkDir = os.getcwd()
 config.to_netcdf(wrkDir+'/data/config.nc', engine='netcdf4')
 
-
-results = wrkDir+'/results/Shoreline_JA21a.nc'
-
-# Verifica se o arquivo existe
-if os.path.exists(results):
-    print(f"Overwriting ShorelineJA21a.nc results.")
-    # Remove o arquivo
-    os.remove(results)
-
 model = cal_Jaramillo20(wrkDir+'/data/')
 
 setup = setup_spotpy(model)
@@ -81,14 +72,13 @@ ax = plt.subplot(1,1,1)
 # ax.plot(best_simulation,color='black',linestyle='solid', label='Best objf.='+str(bestobjf))
 ax.scatter(model.time_obs, model.Y_obs,s = 1, c = 'grey', label = 'Observed data')
 ax.plot(model.time, full_run, color='red',linestyle='solid', label= 'Jaramillo et al.(2020)')
-plt.fill([model.start_date, model.end_date, model.end_date, model.start_date], [40, 40, 80, 80], 'k', alpha=0.1, edgecolor=None, label = 'Calibration Period')
+plt.fill([model.start_date, model.end_date, model.end_date, model.start_date], [-1e+5, -1e+5, 1e+5, 1e+5], 'k', alpha=0.1, edgecolor=None, label = 'Calibration Period')
 plt.ylim([40,80])
+plt.xlim([model.time[0], model.time[-1]])
 plt.ylabel('Shoreline position [m]', fontdict=font)
-lcolor = 'r'
-leg = r'$ Jaramillo et al.  (2020) $'
 plt.legend(ncol = 6,prop={'size': 6}, loc = 'upper center', bbox_to_anchor=(0.5, 1.15))
 plt.grid(visible=True, which='both', linestyle = '--', linewidth = 0.5)
-fig.savefig('./results/SCEUA_best_modelrun_'+str(config.cal_alg.values)+'.png',dpi=300)
+fig.savefig('./results/Best_modelrun_'+str(config.cal_alg.values)+'.png',dpi=300)
 
 spt.analyser.plot_parametertrace(results)
 

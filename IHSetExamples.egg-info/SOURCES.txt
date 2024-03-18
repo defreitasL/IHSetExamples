@@ -2,6 +2,8 @@ LICENSE
 README.md
 setup.py
 IHSetExamples/Jaramillo20.py
+IHSetExamples/Jaramillo21a.py
+IHSetExamples/Yates09.py
 IHSetExamples/__init__.py
 IHSetExamples.egg-info/PKG-INFO
 IHSetExamples.egg-info/SOURCES.txt
