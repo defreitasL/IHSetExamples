@@ -1,0 +1,13 @@
+# FOLDERS 
+./.vscode
+env
+./src/_pycache__
+
+# FILES
+*.png
+*.env
+*.pyc
+*.log
+*.csv
+*.nc
+*.log
