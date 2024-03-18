@@ -4,3 +4,4 @@ spotpy
 IHSetCalibration@ git+https://github.com/defreitasL/IHSetCalibration.git
 IHSetJaramillo20@ git+https://github.com/defreitasL/IHSetJaramillo20.git
 IHSetJaramillo21a@ git+https://github.com/defreitasL/IHSetJaramillo21a.git
+IHSetJaramillo21a@ git+https://github.com/defreitasL/IHSetYates09.git

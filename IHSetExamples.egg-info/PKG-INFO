@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: IHSetExamples
-Version: 0.0.3
+Version: 0.0.4
 Summary: IH-SET Examples
 Home-page: https://github.com/defreitasL/IHSetExamples
 Author: Lucas de Freitas Pereira
@@ -20,3 +20,4 @@ Requires-Dist: spotpy
 Requires-Dist: IHSetCalibration@ git+https://github.com/defreitasL/IHSetCalibration.git
 Requires-Dist: IHSetJaramillo20@ git+https://github.com/defreitasL/IHSetJaramillo20.git
 Requires-Dist: IHSetJaramillo21a@ git+https://github.com/defreitasL/IHSetJaramillo21a.git
+Requires-Dist: IHSetJaramillo21a@ git+https://github.com/defreitasL/IHSetYates09.git
