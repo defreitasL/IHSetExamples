@@ -1,0 +1,5 @@
+matplotlib
+xarray
+spotpy
+IHSetCalibration@ git+https://github.com/defreitasL/IHSetCalibration.git
+IHSetJaramillo20@ git+https://github.com/defreitasL/IHSetJaramillo20.git
