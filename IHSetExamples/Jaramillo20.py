@@ -64,22 +64,31 @@ cero = -best_model_run['parcero']
 full_run, _ = jaramillo20(model.E, model.dt, a, b, cacr, cero, model.Obs[0], model.vlt)
 
 plt.rcParams.update({'font.family': 'serif'})
-plt.rcParams.update({'font.size': 7})
+plt.rcParams.update({'font.size': 5})
 plt.rcParams.update({'font.weight': 'bold'})
 font = {'family': 'serif',
         'weight': 'bold',
-        'size': 8}
-fig = plt.figure(figsize=(12, 2), dpi=300, linewidth=5, edgecolor="#04253a")
-ax = plt.subplot(1,1,1)
+        'size': 5}
+
+ylim_lower = np.floor(np.min([np.min(model.Obs), np.min(full_run)]) / 10) * 10
+ylim_upper = np.floor(np.max([np.max(model.Obs), np.max(full_run)]) / 10) * 10
+
+fig, ax = plt.subplots(2 , 1, figsize=(10, 2), dpi=300, linewidth=5, edgecolor="#04253a", gridspec_kw={'height_ratios': [3.5, 1.5]})
 # ax.plot(best_simulation,color='black',linestyle='solid', label='Best objf.='+str(bestobjf))
-ax.scatter(model.time_obs, model.Obs,s = 1, c = 'grey', label = 'Observed data')
-ax.plot(model.time, full_run, color='red',linestyle='solid', label= 'Jaramillo et al.(2020)')
-plt.fill([model.start_date, model.end_date, model.end_date, model.start_date], [-1e+5, -1e+5, 1e+5, 1e+5], 'k', alpha=0.1, edgecolor=None, label = 'Calibration Period')
-plt.ylim([40,80])
-plt.xlim([model.time[0], model.time[-1]])
-plt.ylabel('Shoreline position [m]', fontdict=font)
-plt.legend(ncol = 6,prop={'size': 6}, loc = 'upper center', bbox_to_anchor=(0.5, 1.15))
-plt.grid(visible=True, which='both', linestyle = '--', linewidth = 0.5)
+ax[0].scatter(model.time_obs, model.Obs,s = 1, c = 'grey', label = 'Observed data')
+ax[0].plot(model.time, full_run, color='red',linestyle='solid', label= 'Jaramillo et al.(2020)')
+ax[0].fill([model.start_date, model.end_date, model.end_date, model.start_date], [-1e+5, -1e+5, 1e+5, 1e+5], 'k', alpha=0.1, edgecolor=None, label = 'Calibration Period')
+ax[0].set_ylim([ylim_lower,ylim_upper])
+ax[0].set_xlim([model.time[0], model.time[-1]])
+ax[0].set_ylabel('Shoreline position [m]', fontdict=font)
+ax[0].legend(ncol = 6,prop={'size': 6}, loc = 'upper center', bbox_to_anchor=(0.5, 1.20))
+ax[0].grid(visible=True, which='both', linestyle = '--', linewidth = 0.5)
+
+ax[1].plot(model.time, model.E/np.max(model.E),color='black',linestyle='solid', label='Best objf.='+str(bestobjf))
+ax[1].set_ylim([0,1])
+ax[1].set_xlim([model.time[0], model.time[-1]])
+ax[1].set_yticks([0, 1], ['0', r'$E_{max}$'])
+plt.subplots_adjust(hspace=0.3)
 fig.savefig('./results/Jaramillo20_Best_modelrun_'+str(config.cal_alg.values)+'.png',dpi=300)
 
 # Calibration:
