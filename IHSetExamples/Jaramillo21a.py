@@ -1,9 +1,11 @@
 from IHSetJaramillo21a import cal_Jaramillo21a, jaramillo21a
-from IHSetCalibration import setup_spotpy
+from IHSetCalibration import setup_spotpy, mielke_skill_score
 import xarray as xr
 import os
 import matplotlib.pyplot as plt
 import spotpy as spt
+import numpy as np
+from IHSetExamples import plot_par_evolution
 
 # Avaliable methods: NSGAII, mle, mc, dds, mcmc, sa, abc, lhs, rope, sceua, demcz, padds, fscabc
 
@@ -76,8 +78,6 @@ plt.legend(ncol = 6,prop={'size': 6}, loc = 'upper center', bbox_to_anchor=(0.5,
 plt.grid(visible=True, which='both', linestyle = '--', linewidth = 0.5)
 fig.savefig('./results/Jaramillo21a_Best_modelrun_'+str(config.cal_alg.values)+'.png',dpi=300)
 
-spt.analyser.plot_parametertrace(results)
-
 # Calibration:
 rmse = spt.objectivefunctions.rmse(model.observations, best_simulation)
 nsse = spt.objectivefunctions.nashsutcliffe(model.observations, best_simulation)
@@ -99,5 +99,8 @@ print('Nash-Sutcliffe coefficient [-]| %-5.2f        | %-5.2f     |' % (nsse, ns
 print('Mielke Skill Score [-]        | %-5.2f        | %-5.2f     |' % (mss, mss_v))
 print('R2 [-]                        | %-5.2f        | %-5.2f     |' % (rp, rp_v))
 print('Bias [m]                      | %-5.2f        | %-5.2f     |' % (bias, bias_v))
+
+
+plot_par_evolution(results)
 
 config.close()
