@@ -77,7 +77,7 @@ fig, ax = plt.subplots(2 , 1, figsize=(10, 2), dpi=300, linewidth=5, edgecolor="
 # ax.plot(best_simulation,color='black',linestyle='solid', label='Best objf.='+str(bestobjf))
 ax[0].scatter(model.time_obs, model.Obs,s = 1, c = 'grey', label = 'Observed data')
 ax[0].plot(model.time, full_run, color='red',linestyle='solid', label= 'Jaramillo et al.(2020)')
-ax[0].fill([model.start_date, model.end_date, model.end_date, model.start_date], [-1e+5, -1e+5, 1e+5, 1e+5], 'k', alpha=0.1, edgecolor=None, label = 'Calibration Period')
+ax[0].fill([model.start_date, model.end_date, model.end_date, model.start_date], [ylim_lower, ylim_lower, ylim_upper, ylim_upper], 'k', alpha=0.1, edgecolor=None, label = 'Calibration Period')
 ax[0].set_ylim([ylim_lower,ylim_upper])
 ax[0].set_xlim([model.time[0], model.time[-1]])
 ax[0].set_ylabel('Shoreline position [m]', fontdict=font)
