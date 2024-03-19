@@ -1,7 +1,10 @@
 matplotlib
 xarray
 spotpy
+numpy
+IHSetUtils@ git+https://github.com/IHCantabria/IHSetUtils.git
 IHSetCalibration@ git+https://github.com/defreitasL/IHSetCalibration.git
 IHSetJaramillo20@ git+https://github.com/defreitasL/IHSetJaramillo20.git
 IHSetJaramillo21a@ git+https://github.com/defreitasL/IHSetJaramillo21a.git
-IHSetJaramillo21a@ git+https://github.com/defreitasL/IHSetYates09.git
+IHSetYates09@ git+https://github.com/defreitasL/IHSetYates09.git
+IHSetMillerDean@ git+https://github.com/defreitasL/IHSetMillerDean.git

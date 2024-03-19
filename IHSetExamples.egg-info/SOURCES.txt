@@ -3,6 +3,7 @@ README.md
 setup.py
 IHSetExamples/Jaramillo20.py
 IHSetExamples/Jaramillo21a.py
+IHSetExamples/MillerDean.py
 IHSetExamples/Yates09.py
 IHSetExamples/__init__.py
 IHSetExamples.egg-info/PKG-INFO

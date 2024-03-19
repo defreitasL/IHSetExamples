@@ -78,7 +78,7 @@ plt.xlim([model.time[0], model.time[-1]])
 plt.ylabel('Shoreline position [m]', fontdict=font)
 plt.legend(ncol = 6,prop={'size': 6}, loc = 'upper center', bbox_to_anchor=(0.5, 1.15))
 plt.grid(visible=True, which='both', linestyle = '--', linewidth = 0.5)
-fig.savefig('./results/Best_modelrun_'+str(config.cal_alg.values)+'.png',dpi=300)
+fig.savefig('./results/Jaramillo20_Best_modelrun_'+str(config.cal_alg.values)+'.png',dpi=300)
 
 spt.analyser.plot_parametertrace(results)
 
