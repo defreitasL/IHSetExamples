@@ -55,7 +55,7 @@ b = best_model_run['parb']
 Lcw = best_model_run['parLcw']
 Lccw = best_model_run['parLccw']
 
-full_run, _ = jaramillo21a(model.P, model.Dir,model.dt, a, b, Lcw, Lccw, model.alpha_obs[0])
+full_run, _ = jaramillo21a(model.P, model.Dir,model.dt, a, b, Lcw, Lccw, model.Obs[0])
 
 plt.rcParams.update({'font.family': 'serif'})
 plt.rcParams.update({'font.size': 7})
@@ -66,7 +66,7 @@ font = {'family': 'serif',
 fig = plt.figure(figsize=(12, 2), dpi=300, linewidth=5, edgecolor="#04253a")
 ax = plt.subplot(1,1,1)
 # ax.plot(best_simulation,color='black',linestyle='solid', label='Best objf.='+str(bestobjf))
-ax.scatter(model.time_obs, model.alpha_obs,s = 1, c = 'grey', label = 'Observed data')
+ax.scatter(model.time_obs, model.Obs,s = 1, c = 'grey', label = 'Observed data')
 ax.plot(model.time, full_run, color='red',linestyle='solid', label= 'Jaramillo et al.(2021a)')
 plt.fill([model.start_date, model.end_date, model.end_date, model.start_date], [-1e+5, -1e+5, 1e+5, 1e+5], 'k', alpha=0.1, edgecolor=None, label = 'Calibration Period')
 plt.ylim([50, 60])
@@ -77,5 +77,27 @@ plt.grid(visible=True, which='both', linestyle = '--', linewidth = 0.5)
 fig.savefig('./results/Jaramillo21a_Best_modelrun_'+str(config.cal_alg.values)+'.png',dpi=300)
 
 spt.analyser.plot_parametertrace(results)
+
+# Calibration:
+rmse = spt.objectivefunctions.rmse(model.observations, best_simulation)
+nsse = spt.objectivefunctions.nashsutcliffe(model.observations, best_simulation)
+mss = mielke_skill_score(model.observations, best_simulation)
+rp = spt.objectivefunctions.rsquared(model.observations, best_simulation)
+bias = spt.objectivefunctions.bias(model.observations, best_simulation)
+
+# Validation:
+run_cut = full_run[model.idx_validation]
+rmse_v = spt.objectivefunctions.rmse(model.Obs[model.idx_validation_obs], run_cut[model.idx_validation_for_obs])
+nsse_v = spt.objectivefunctions.nashsutcliffe(model.Obs[model.idx_validation_obs], run_cut[model.idx_validation_for_obs])
+mss_v = mielke_skill_score(model.Obs[model.idx_validation_obs], run_cut[model.idx_validation_for_obs])
+rp_v = spt.objectivefunctions.rsquared(model.Obs[model.idx_validation_obs], run_cut[model.idx_validation_for_obs])
+bias_v = spt.objectivefunctions.bias(model.Obs[model.idx_validation_obs], run_cut[model.idx_validation_for_obs])
+
+print('Metrics                       | Calibration  | Validation|')
+print('RMSE [m]                      | %-5.2f        | %-5.2f     |' % (rmse, rmse_v))
+print('Nash-Sutcliffe coefficient [-]| %-5.2f        | %-5.2f     |' % (nsse, nsse_v))
+print('Mielke Skill Score [-]        | %-5.2f        | %-5.2f     |' % (mss, mss_v))
+print('R2 [-]                        | %-5.2f        | %-5.2f     |' % (rp, rp_v))
+print('Bias [m]                      | %-5.2f        | %-5.2f     |' % (bias, bias_v))
 
 config.close()

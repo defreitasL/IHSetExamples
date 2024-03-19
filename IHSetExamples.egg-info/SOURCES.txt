@@ -6,6 +6,7 @@ IHSetExamples/Jaramillo21a.py
 IHSetExamples/MillerDean.py
 IHSetExamples/Yates09.py
 IHSetExamples/__init__.py
+IHSetExamples/plot_par_evolution.py
 IHSetExamples.egg-info/PKG-INFO
 IHSetExamples.egg-info/SOURCES.txt
 IHSetExamples.egg-info/dependency_links.txt
