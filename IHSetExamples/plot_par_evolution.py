@@ -17,7 +17,7 @@ def plot_par_evolution(results):
 
     fig, ax = plt.subplots(n_par, 1, figsize=(8, 2*n_par), dpi=200, linewidth=5, edgecolor="#04253a")
     for i, par in enumerate(labels):
-        ax[i].plot(results[par], color='black', linestyle='solid', label=par)
+        ax[i].plot(results[par], color='black', linestyle='solid', linewidth=.75)
         ax[i].set_ylabel(par[3:])
         ax[i].set_xlabel('Generation')
         ax[i].legend()

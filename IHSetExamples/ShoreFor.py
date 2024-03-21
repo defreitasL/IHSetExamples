@@ -1,4 +1,4 @@
-from IHSetJaramillo20 import cal_Jaramillo20, jaramillo20
+from IHSetShoreFor import cal_ShoreFor, shoreFor
 from IHSetCalibration import setup_spotpy, mielke_skill_score
 import xarray as xr
 import os
@@ -10,13 +10,13 @@ from IHSetExamples import plot_par_evolution
 # Avaliable methods: NSGAII, mle, mc, dds, mcmc, sa, abc, lhs, rope, sceua, demcz, padds, fscabc
 
 # config = xr.Dataset(coords={'dt': 3,                # [hours]
+#                             'D50': 0.3e-3,          # Median grain size [m]
 #                             'switch_Yini': 0,       # Calibrate the initial position? (0: No, 1: Yes)
-#                             'switch_vlt': 0,        # Calibrate the longterm trend? (0: No, 1: Yes)
-#                             'vlt': 0,               # Longterm trend [m]
-#                             'Ysi': 2000,            # Initial year for calibration
+#                             'switch_D': 0,          # Calibrate D independently? (0: No, 1: Yes)
+#                             'Ysi': 1999,            # Initial year for calibration
 #                             'Msi': 1,               # Initial month for calibration
 #                             'Dsi': 1,               # Initial day for calibration
-#                             'Ysf': 2005,            # Final year for calibration
+#                             'Ysf': 2010,            # Final year for calibration
 #                             'Msf': 1,               # Final month for calibration
 #                             'Dsf': 1,               # Final day for calibration
 #                             'cal_alg': 'NSGAII',    # Avaliable methods: NSGAII
@@ -27,9 +27,9 @@ from IHSetExamples import plot_par_evolution
 #                             })              
 
 config = xr.Dataset(coords={'dt': 3,                # [hours]
+                            'D50': 0.3e-3,          # Median grain size [m]
                             'switch_Yini': 0,       # Calibrate the initial position? (0: No, 1: Yes)
-                            'switch_vlt': 0,        # Calibrate the longterm trend? (0: No, 1: Yes)
-                            'vlt': 0,               # Longterm trend [m]
+                            'switch_D': 1,          # Calibrate D independently? (0: No, 1: Yes)
                             'Ysi': 1999,            # Initial year for calibration
                             'Msi': 1,               # Initial month for calibration
                             'Dsi': 1,               # Initial day for calibration
@@ -41,11 +41,10 @@ config = xr.Dataset(coords={'dt': 3,                # [hours]
                             'repetitions': 40000    # Number of repetitions for the calibration algorithm
                             })
 
-
 wrkDir = os.getcwd()
 config.to_netcdf(wrkDir+'/data/config.nc', engine='netcdf4')
 
-model = cal_Jaramillo20(wrkDir+'/data/')
+model = cal_ShoreFor(wrkDir+'/data/')
 
 setup = setup_spotpy(model)
 
@@ -56,12 +55,11 @@ best_model_run = results[bestindex]
 fields=[word for word in best_model_run.dtype.names if word.startswith('sim')]
 best_simulation = np.array(list(best_model_run[fields]))
 
-a = -best_model_run['para']
-b = best_model_run['parb']
-cacr = -best_model_run['parcacr']
-cero = -best_model_run['parcero']
+phi = best_model_run['parphi']
+c = best_model_run['parc']
+D = best_model_run['parD']
 
-full_run, _ = jaramillo20(model.E, model.dt, a, b, cacr, cero, model.Obs[0], model.vlt)
+full_run, _ = shoreFor(model.P, model.Omega, model.dt, phi, c, D, model.Obs[0])
 
 plt.rcParams.update({'font.family': 'serif'})
 plt.rcParams.update({'font.size': 5})
@@ -84,12 +82,12 @@ ax[0].set_ylabel('Shoreline position [m]', fontdict=font)
 ax[0].legend(ncol = 6,prop={'size': 6}, loc = 'upper center', bbox_to_anchor=(0.5, 1.20))
 ax[0].grid(visible=True, which='both', linestyle = '--', linewidth = 0.5)
 
-ax[1].plot(model.time, model.E/np.max(model.E),color='black',linestyle='solid', label='Best objf.='+str(bestobjf))
+ax[1].plot(model.time, model.P/np.max(model.P),color='black',linestyle='solid', label='Best objf.='+str(bestobjf))
 ax[1].set_ylim([0,1])
 ax[1].set_xlim([model.time[0], model.time[-1]])
-ax[1].set_yticks([0, 1], ['0', r'$E_{max}$'])
+ax[1].set_yticks([0, 1], ['0', r'$P_{max}$'])
 plt.subplots_adjust(hspace=0.3)
-fig.savefig('./results/Jaramillo20_Best_modelrun_'+str(config.cal_alg.values)+'.png',dpi=300)
+fig.savefig('./results/ShoreFor_Best_modelrun_'+str(config.cal_alg.values)+'.png',dpi=300)
 
 # Calibration:
 rmse = spt.objectivefunctions.rmse(model.observations, best_simulation)

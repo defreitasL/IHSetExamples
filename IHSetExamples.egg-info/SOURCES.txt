@@ -4,6 +4,7 @@ setup.py
 IHSetExamples/Jaramillo20.py
 IHSetExamples/Jaramillo21a.py
 IHSetExamples/MillerDean.py
+IHSetExamples/ShoreFor.py
 IHSetExamples/Yates09.py
 IHSetExamples/__init__.py
 IHSetExamples/plot_par_evolution.py
