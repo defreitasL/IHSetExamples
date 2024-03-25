@@ -24,17 +24,17 @@ from IHSetExamples import plot_par_evolution
 #                             'generations': 1000,    # Number of generations for the calibration algorithm
 #                             })              
 
-config = xr.Dataset(coords={'dt': 3,                # [hours]
+config = xr.Dataset(coords={'dt': 1,                # [hours]
                             'switch_alpha_ini': 0,  # Calibrate the initial position? (0: No, 1: Yes)
-                            'Ysi': 1999,            # Initial year for calibration
+                            'Ysi': 1975,            # Initial year for calibration
                             'Msi': 1,               # Initial month for calibration
                             'Dsi': 1,               # Initial day for calibration
-                            'Ysf': 2010,            # Final year for calibration
+                            'Ysf': 2014,            # Final year for calibration
                             'Msf': 1,               # Final month for calibration
                             'Dsf': 1,               # Final day for calibration
                             'cal_alg': 'sceua',     # Avaliable methods: sceua
                             'metrics': 'mss',       # Metrics to be minimized (mss, RP, rmse, nsse)
-                            'repetitions': 100000    # Number of repetitions for the calibration algorithm
+                            'repetitions': 50000    # Number of repetitions for the calibration algorithm
                             })
 
 
@@ -65,17 +65,26 @@ plt.rcParams.update({'font.weight': 'bold'})
 font = {'family': 'serif',
         'weight': 'bold',
         'size': 8}
-fig = plt.figure(figsize=(12, 2), dpi=300, linewidth=5, edgecolor="#04253a")
-ax = plt.subplot(1,1,1)
+
+ylim_lower = np.floor(np.min([np.nanmin(model.Obs), np.nanmin(full_run)]) / 2) * 2
+ylim_upper = np.ceil(np.max([np.nanmax(model.Obs), np.nanmax(full_run)]) / 2) * 2
+
+fig, ax = plt.subplots(2 , 1, figsize=(10, 2), dpi=300, linewidth=5, edgecolor="#04253a", gridspec_kw={'height_ratios': [3.5, 1.5]})
 # ax.plot(best_simulation,color='black',linestyle='solid', label='Best objf.='+str(bestobjf))
-ax.scatter(model.time_obs, model.Obs,s = 1, c = 'grey', label = 'Observed data')
-ax.plot(model.time, full_run, color='red',linestyle='solid', label= 'Jaramillo et al.(2021a)')
-plt.fill([model.start_date, model.end_date, model.end_date, model.start_date], [-1e+5, -1e+5, 1e+5, 1e+5], 'k', alpha=0.1, edgecolor=None, label = 'Calibration Period')
-plt.ylim([50, 60])
-plt.xlim([model.time[0], model.time[-1]])
-plt.ylabel('Shoreline orientation [m]', fontdict=font)
-plt.legend(ncol = 6,prop={'size': 6}, loc = 'upper center', bbox_to_anchor=(0.5, 1.15))
-plt.grid(visible=True, which='both', linestyle = '--', linewidth = 0.5)
+ax[0].scatter(model.time_obs, model.Obs,s = 1, c = 'grey', label = 'Observed data')
+ax[0].plot(model.time, full_run, color='red',linestyle='solid', label= 'Jaramillo et al.(2020)')
+ax[0].fill([model.start_date, model.end_date, model.end_date, model.start_date], [ylim_lower, ylim_lower, ylim_upper, ylim_upper], 'k', alpha=0.1, edgecolor=None, label = 'Calibration Period')
+ax[0].set_ylim([ylim_lower,ylim_upper])
+ax[0].set_xlim([model.time[0], model.time[-1]])
+ax[0].set_ylabel('Shoreline position [m]', fontdict=font)
+ax[0].legend(ncol = 6,prop={'size': 6}, loc = 'upper center', bbox_to_anchor=(0.5, 1.20))
+ax[0].grid(visible=True, which='both', linestyle = '--', linewidth = 0.5)
+
+ax[1].plot(model.time, model.P/np.max(model.P),color='black',linestyle='solid', label='Best objf.='+str(bestobjf))
+ax[1].set_ylim([0,1])
+ax[1].set_xlim([model.time[0], model.time[-1]])
+ax[1].set_yticks([0, 1], ['0', r'$^P_{max}$'])
+plt.subplots_adjust(hspace=0.3)
 fig.savefig('./results/Jaramillo21a_Best_modelrun_'+str(config.cal_alg.values)+'.png',dpi=300)
 
 # Calibration:

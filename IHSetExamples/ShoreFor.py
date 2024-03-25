@@ -29,7 +29,8 @@ from IHSetExamples import plot_par_evolution
 config = xr.Dataset(coords={'dt': 3,                # [hours]
                             'D50': 0.3e-3,          # Median grain size [m]
                             'switch_Yini': 0,       # Calibrate the initial position? (0: No, 1: Yes)
-                            'switch_D': 1,          # Calibrate D independently? (0: No, 1: Yes)
+                            'switch_D': 0,          # Calibrate D independently? (0: No, 1: Yes)
+                            'switch_r': 0,          # Calibrate r independently? (0: No, 1: Yes)
                             'Ysi': 1999,            # Initial year for calibration
                             'Msi': 1,               # Initial month for calibration
                             'Dsi': 1,               # Initial day for calibration
@@ -55,11 +56,25 @@ best_model_run = results[bestindex]
 fields=[word for word in best_model_run.dtype.names if word.startswith('sim')]
 best_simulation = np.array(list(best_model_run[fields]))
 
-phi = best_model_run['parphi']
-c = best_model_run['parc']
-D = best_model_run['parD']
+try:
+    phi = best_model_run['parphi']
+    c = best_model_run['parc']
+    N = best_model_run['parN']
+    
+    if config.switch_D.values == 1:
+        D = best_model_run['parD']
+        full_run, _ = shoreFor(model.P, model.Omega, model.dt, phi, c, D, model.Obs[0], N)
+    else:
+        full_run, _ = shoreFor(model.P, model.Omega, model.dt, phi, c, 2*phi, model.Obs[0], N)
+except:
+    phi = best_model_run['parphi']
+    cp = best_model_run['parcp']
+    cm = best_model_run['parcm']
+    if config.switch_D.values == 1:
+        D = best_model_run['parD']
+    full_run, _ = shoreFor(model.P, model.Omega, model.dt, phi, None, D, model.Obs[0], 1, cp, cm)
 
-full_run, _ = shoreFor(model.P, model.Omega, model.dt, phi, c, D, model.Obs[0])
+
 
 plt.rcParams.update({'font.family': 'serif'})
 plt.rcParams.update({'font.size': 5})
@@ -68,8 +83,8 @@ font = {'family': 'serif',
         'weight': 'bold',
         'size': 5}
 
-ylim_lower = np.floor(np.min([np.min(model.Obs), np.min(full_run)]) / 10) * 10
-ylim_upper = np.floor(np.max([np.max(model.Obs), np.max(full_run)]) / 10) * 10
+ylim_lower = np.floor(np.min([np.nanmin(model.Obs), np.nanmin(full_run)]) / 10) * 10
+ylim_upper = np.ceil(np.max([np.nanmax(model.Obs), np.nanmax(full_run)]) / 10) * 10
 
 fig, ax = plt.subplots(2 , 1, figsize=(10, 2), dpi=300, linewidth=5, edgecolor="#04253a", gridspec_kw={'height_ratios': [3.5, 1.5]})
 # ax.plot(best_simulation,color='black',linestyle='solid', label='Best objf.='+str(bestobjf))

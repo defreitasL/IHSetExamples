@@ -71,7 +71,7 @@ font = {'family': 'serif',
         'size': 5}
 
 ylim_lower = np.floor(np.min([np.min(model.Obs), np.min(full_run)]) / 10) * 10
-ylim_upper = np.floor(np.max([np.max(model.Obs), np.max(full_run)]) / 10) * 10
+ylim_upper = np.ceil(np.max([np.max(model.Obs), np.max(full_run)]) / 10) * 10
 
 fig, ax = plt.subplots(2 , 1, figsize=(10, 2), dpi=300, linewidth=5, edgecolor="#04253a", gridspec_kw={'height_ratios': [3.5, 1.5]})
 # ax.plot(best_simulation,color='black',linestyle='solid', label='Best objf.='+str(bestobjf))

@@ -20,5 +20,4 @@ def plot_par_evolution(results):
         ax[i].plot(results[par], color='black', linestyle='solid', linewidth=.75)
         ax[i].set_ylabel(par[3:])
         ax[i].set_xlabel('Generation')
-        ax[i].legend()
     plt.show()
